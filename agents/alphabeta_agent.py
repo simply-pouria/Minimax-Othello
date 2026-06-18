@@ -58,6 +58,27 @@ class AlphaBetaAgent:
             + 25 * corner_score
             + 10 * position_score
         )
+        
+    def _cell_weight(self, game, r, c, n, corners):
+        if (r, c) in corners:
+            return 50
+
+        for cr, cc in corners:
+            dr = abs(r - cr)
+            dc = abs(c - cc)
+
+            corner_occupied = (game.board[cr][cc] != 0)
+
+            if dr == 1 and dc == 1:
+                return 0 if corner_occupied else -25
+
+            if (dr == 1 and dc == 0) or (dr == 0 and dc == 1):
+                return 0 if corner_occupied else -15
+
+        if r == 0 or r == n - 1 or c == 0 or c == n - 1:
+            return 5
+
+        return 0
 
     def alphabeta(self, game, depth, alpha, beta, maximizing, root_player):
         raise NotImplementedError
