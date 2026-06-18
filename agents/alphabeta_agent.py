@@ -81,7 +81,77 @@ class AlphaBetaAgent:
         return 0
 
     def alphabeta(self, game, depth, alpha, beta, maximizing, root_player):
-        raise NotImplementedError
+        if depth == 0 or game.game_over():
+            return self.evaluate(game, root_player), None
+
+        current_player = root_player if maximizing else -root_player
+        moves = game.get_valid_moves(current_player)
+
+        if not moves:
+            value, _ = self.alphabeta(
+                game,
+                depth - 1,
+                alpha,
+                beta,
+                not maximizing,
+                root_player,
+            )
+            return value, None
+
+        if maximizing:
+            best_value = float("-inf")
+            best_move = moves[0]
+
+            for move in moves:
+                child = game.copy()
+                child.make_move(current_player, *move)
+
+                value, _ = self.alphabeta(
+                    child,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    False,          
+                    root_player,
+                )
+
+                if value > best_value:
+                    best_value = value
+                    best_move = move
+
+                alpha = max(alpha, best_value)
+                if alpha >= beta:
+                    break           # β-cutoff
+
+            return best_value, best_move
+
+        else:
+            best_value = float("inf")
+            best_move = moves[0]
+
+            for move in moves:
+                child = game.copy()
+                child.make_move(current_player, *move)
+
+                value, _ = self.alphabeta(
+                    child,
+                    depth - 1,
+                    alpha,
+                    beta,
+                    True,           
+                    root_player,
+                )
+
+                if value < best_value:
+                    best_value = value
+                    best_move = move
+
+
+                beta = min(beta, best_value)
+                if alpha >= beta:
+                    break           
+
+            return best_value, best_move
 
     def choose_move(self, game, player):
         value, move = self.alphabeta(
