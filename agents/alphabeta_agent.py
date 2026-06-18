@@ -17,16 +17,30 @@ class AlphaBetaAgent:
         else:
             piece_score = white_score - black_score
 
-        # winning/losing should matter a lot I think?
+        # If the game is finished, winning/losing must have very high importance.
         if game.game_over():
-            return 1000 * piece_score
+            if piece_score > 0:
+                return 1000000
+            elif piece_score < 0:
+                return -1000000
+            else:
+                return 0
 
-        # more options
-        mobility_score = len(game.get_valid_moves(player)) - len(game.get_valid_moves(opponent))
+        # Mobility: having more legal moves is usually better in Othello.
+        mobility_score = (
+                len(game.get_valid_moves(player))
+                - len(game.get_valid_moves(opponent))
+        )
 
-        # corners are very valuable in Othello, I have lost too many times because of this...
+        # Corners are very valuable in Othello.
+        # This works for different board sizes, not only 6x6.
         n = game.size
-        corners = [(0, 0), (0, n - 1), (n - 1, 0), (n - 1, n - 1)]
+        corners = [
+            (0, 0),
+            (0, n - 1),
+            (n - 1, 0),
+            (n - 1, n - 1)
+        ]
 
         my_corners = 0
         opponent_corners = 0
@@ -38,26 +52,8 @@ class AlphaBetaAgent:
                 opponent_corners += 1
 
         corner_score = my_corners - opponent_corners
-        
-        position_score =0
-        for r in range(n):
-            for c in range(n):
-                cell =game.board[r][c]
-                if cell == 0:
-                    continue
-                weight =self._cell_weight(game, r, c, n, corners)
-                if cell == player:
-                    position_score +=weight
-                else:
-                    position_score -=weight
 
-
-        return (
-            1  * piece_score
-            + 5  * mobility_score
-            + 25 * corner_score
-            + 10 * position_score
-        )
+        return piece_score + 5 * mobility_score + 25 * corner_score
         
     def _cell_weight(self, game, r, c, n, corners):
         if (r, c) in corners:

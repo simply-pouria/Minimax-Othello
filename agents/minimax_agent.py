@@ -1,4 +1,3 @@
-# TODO: STUDENT IMPLEMENTATION
 
 class MinimaxAgent:
     def __init__(self, depth=4):
@@ -19,7 +18,12 @@ class MinimaxAgent:
 
         # If the game is finished, winning/losing must have very high importance.
         if game.game_over():
-            return 1000 * piece_score
+            if piece_score > 0:
+                return 1000000
+            elif piece_score < 0:
+                return -1000000
+            else:
+                return 0
 
         # Mobility: having more legal moves is usually better in Othello.
         mobility_score = (
