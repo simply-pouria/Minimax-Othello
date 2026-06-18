@@ -99,11 +99,11 @@ class AlphaBetaAgent:
             return value, None
 
         if maximizing:
-            best_value = float("-inf")
-            best_move = moves[0]
+            best_value =float("-inf")
+            best_move =moves[0]
 
             for move in moves:
-                child = game.copy()
+                child =game.copy()
                 child.make_move(current_player, *move)
 
                 value, _ = self.alphabeta(
@@ -116,21 +116,21 @@ class AlphaBetaAgent:
                 )
 
                 if value > best_value:
-                    best_value = value
-                    best_move = move
+                    best_value =value
+                    best_move =move
 
-                alpha = max(alpha, best_value)
+                alpha =max(alpha, best_value)
                 if alpha >= beta:
-                    break           # β-cutoff
+                    break           
 
             return best_value, best_move
 
         else:
-            best_value = float("inf")
-            best_move = moves[0]
+            best_value =float("inf")
+            best_move =moves[0]
 
             for move in moves:
-                child = game.copy()
+                child =game.copy()
                 child.make_move(current_player, *move)
 
                 value, _ = self.alphabeta(
@@ -143,8 +143,8 @@ class AlphaBetaAgent:
                 )
 
                 if value < best_value:
-                    best_value = value
-                    best_move = move
+                    best_value =value
+                    best_move =move
 
 
                 beta = min(beta, best_value)
